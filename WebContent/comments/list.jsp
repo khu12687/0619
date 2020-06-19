@@ -28,6 +28,7 @@ $(function(){
 	$("table").animate({
 		left:'0px' //js style.left 와 동일
 	});
+	
 });
 </script>
 </head>

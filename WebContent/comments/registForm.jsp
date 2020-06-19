@@ -23,7 +23,7 @@ input[type=text], select, textarea {
 	resize: vertical;
 }
 
-input[type=submit] {
+input[type=button] {
 	background-color: #4CAF50;
 	color: white;
 	padding: 12px 20px;
@@ -42,26 +42,41 @@ input[type=submit]:hover {
 	padding: 20px;
 }
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="//cdn.ckeditor.com/4.14.1/standard/ckeditor.js"></script>
+<script>
+$(function(){
+	CKEDITOR.replace("content");
+	//등록버튼
+	$($("input[type='button']")[0]).click(function(){
+		//글 등록을 서버에 요청한다!!(jsp or servlet)
+		alert("등록?");
+		$("form").attr({
+			"action":"/comments/regist.jsp",
+			"method":"post"
+		});
+		$("form").submit();
+	});
+	//목록버튼
+		$($("input[type='button']")[1]).click(function(){
+		alert("목록?");
+		location.href="/comments/list.jsp";
+	});
+});
+
+</script>
 </head>
 <body>
 
 	<h3>Contact Form</h3>
 
 	<div class="container">
-		<form action="/action_page.php">
-			<label for="fname">First Name</label> <input type="text" id="fname"
-				name="firstname" placeholder="Your name.."> <label
-				for="lname">Last Name</label> <input type="text" id="lname"
-				name="lastname" placeholder="Your last name.."> <label
-				for="country">Country</label> <select id="country" name="country">
-				<option value="australia">Australia</option>
-				<option value="canada">Canada</option>
-				<option value="usa">USA</option>
-			</select> <label for="subject">Subject</label>
-			<textarea id="subject" name="subject" placeholder="Write something.."
-				style="height: 200px"></textarea>
-
-			<input type="submit" value="Submit">
+		<form>
+			 <input type="text" id="fname"name="title" placeholder="Your title.."> 
+			 <input type="text" id="fname"name="writer" placeholder="Your name.."> 
+			<textarea id="content" name="content" placeholder="Write something.."style="height: 200px"></textarea>
+			<input type="button" value="등록">
+			<input type="button" value="목록">
 		</form>
 	</div>
 
