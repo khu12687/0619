@@ -22,7 +22,7 @@
 	int result = newsDAO.insert(news);
 	if(result!=0){
 		out.print("<script>");
-		out.print("alert('등록성공');");
+		//out.print("alert('등록성공');");
 		out.print("location.href='/comments/list.jsp';");
 		out.print("</script>");
 	}else{

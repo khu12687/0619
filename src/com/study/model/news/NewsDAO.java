@@ -48,10 +48,16 @@ public class NewsDAO {
 		ResultSet rs = null;
 		ArrayList list = new ArrayList();
 		
+		StringBuilder sb = new StringBuilder();
+		sb.append("select n.news_id as news_id,title,writer,regdate,hit, count(comments_id) as cnt");
+		sb.append(" from news n left outer join comments c");
+		sb.append(" on n.news_id = c.news_id");
+		sb.append(" group by n.news_id,title,writer,regdate,hit");
+		
 		String sql="select * from news order by news_id desc";
 		con = manager.getConnection();
 		try {
-			pstmt = con.prepareStatement(sql);
+			pstmt = con.prepareStatement(sb.toString());
 			rs=pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -59,9 +65,10 @@ public class NewsDAO {
 				news.setNews_id(rs.getInt("news_id"));
 				news.setTitle(rs.getString("title"));
 				news.setWriter(rs.getString("writer"));
-				news.setContent(rs.getString("content"));
+				//news.setContent(rs.getString("content"));
 				news.setRegdate(rs.getString("regdate"));
 				news.setHit(rs.getInt("hit"));
+				news.setCnt(rs.getInt("cnt"));
 				
 				list.add(news);
 			}

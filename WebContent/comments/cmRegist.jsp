@@ -34,7 +34,7 @@
 		out.print("location.href='/comments/content.jsp?news_id="+news_id+"';");
 		out.print("</script>");
 	}else{
-		out.print("<script>");	
+		out.print("<script>");
 		out.print("alert('댓글 등록 실패');");
 		out.print("history.back();");
 		out.print("</script>");
