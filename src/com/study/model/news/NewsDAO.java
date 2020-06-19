@@ -2,7 +2,10 @@ package com.study.model.news;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.study.commons.db.DBManager;
 
@@ -36,5 +39,68 @@ public class NewsDAO {
 			manager.freeConnection(con,pstmt);
 		}
 		return result;
+	}
+	
+	//머든 글 가져오기  - CRUD 중 Read에 해당!!
+	public List selectAll() {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList list = new ArrayList();
+		
+		String sql="select * from news order by news_id desc";
+		con = manager.getConnection();
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				News news = new News();
+				news.setNews_id(rs.getInt("news_id"));
+				news.setTitle(rs.getString("title"));
+				news.setWriter(rs.getString("writer"));
+				news.setContent(rs.getString("content"));
+				news.setRegdate(rs.getString("regdate"));
+				news.setHit(rs.getInt("hit"));
+				
+				list.add(news);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt, rs);
+		}
+		return list;
+	}
+	//글 한건 간져오기 - CRUD 중 Read에 해당!!
+	public News select(int news_id) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		News news = null;
+		
+		String sql="select * from news where news_id=?";
+		con = manager.getConnection();
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, news_id);
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				news = new News();
+				
+				news.setNews_id(rs.getInt("news_id"));
+				news.setTitle(rs.getString("title"));
+				news.setWriter(rs.getString("writer"));
+				news.setContent(rs.getString("content"));
+				news.setRegdate(rs.getString("regdate"));
+				news.setHit(rs.getInt("hit"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt, rs);
+		}
+		return news;
 	}
 }
