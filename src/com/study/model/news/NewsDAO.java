@@ -110,4 +110,44 @@ public class NewsDAO {
 		}
 		return news;
 	}
+	
+	public int edit(News news) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int result =0;
+		String sql="update news set title=?, writer=?, content=?";
+		sql+=" where news_id=?";
+		con = manager.getConnection();
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, news.getTitle());
+			pstmt.setString(2, news.getWriter());
+			pstmt.setString(3, news.getContent());
+			pstmt.setInt(4, news.getNews_id());
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt);
+		}
+		return  result;
+	}
+	
+	public int delete(News news) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int result =0;
+		String news_id = Integer.toString(news.getNews_id());
+		String sql = "delete from news where news_id ="+news_id;
+		con = manager.getConnection();
+		try {
+			pstmt = con.prepareStatement(sql);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt);
+		}
+		return result;
+	}
 }
