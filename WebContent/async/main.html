@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SPA 만들기</title>
+<style>
+.wrapper{
+	width:1000px;
+	height:600px;
+	margin:auto;
+	border:2px solid red;
+}
+.inputArea{
+	width:20%;
+	height:600px;
+	background:yellow;
+	float:left;
+}
+.listArea{
+	width:60%;
+	height:600px;
+	background:cyan;
+	float:left;
+}
+.detailArea{
+	width:20%;
+	height:600px;
+	background:orange;
+	float:left;
+}
+div{
+	text-align:center;
+}
+</style>
+<script>
+/*
+ Ajax란?
+-자바스크립트를 이용한 비동기통신 기술을 의미하는데,
+	순수한 자바스크립트를 이용하는 방법과 JQuery를 이용하는 방법이 있다..
+-장점 : 새로고침 없는 어플리케이션 제작이 가능!!
+		응용프로그램의 Rich UI를 제공할 수 있다.
+ 
+ */
+ function getList(){
+	//서버측에 요청을 시도하되, 동기방식으로 시도하자!!
+	//location.href="/async/data.jsp"; //get방식
+	//비동기 요청을 시도하려면, ajax의 XMLHttpRequest 객체를 이용하면된다!!
+	var xmlRequest = new XMLHttpRequest();
+	
+	//비동기 객체의 현재 상태를 알수 있는 이벤트 핸들러를 이용하면 통신의 종료 시점 등을
+	//알고 프로그램에 적용가능함
+	xmlRequest.onreadystatechange = function(){
+		/*
+		0: request not initialized 요청준비상태(관심x)
+		1: server connection established (서버에 접속함) (관심x)
+		2: request received (요청 서버에 도달) (관심x)
+		3: processing request (요청을 처리중) (관심x)
+		4: request finished and response is ready (요청완료) (관심 ㅇ)
+		*/
+		
+		//서버로부터 응답을 받되, 그 응답이 성공이라면..
+		if(this.readyState==4 && this.status==200){
+			//alert("서버로부터 받은 응답은:"+this.responseText);
+			var json = JSON.parse(this.responseText); //스트링에 불과한 json 문자열을 json 객체로 파싱
+			
+			printData(json);
+		}
+	};
+	//통신 준비
+	xmlRequest.open("GET","/async/data.jsp",true);
+	xmlRequest.send();
+}
+
+//서버로 부터 응답받은 json 문자열을 이용하여 화면출력!
+function printData(json){
+	
+	var listArea = document.querySelector(".listArea");
+	var tag="<table width=\"100%\" border=\"1px\">";
+	tag+="<tr>";
+	tag+="<td>No</td>";
+	tag+="<td>가게명</td>";
+	tag+="<td>연락처</td>";
+	tag+="<td>지역</td>";
+	tag+="<td>대표메뉴</td>";
+	tag+="</tr>";
+	for(var i=0; i<json.storeList.length;i++){
+		var obj = json.storeList[i];
+		tag+="<tr>";
+		tag+="<td>"+obj.hotplace_id+"</td>";
+		tag+="<td onClick=\"getStore("+obj.hotplace_id+")\">"+obj.name+"</td>";
+		tag+="<td>"+obj.tel+"</td>";
+		tag+="<td>"+obj.addr+"</td>";
+		tag+="<td>"+obj.food+"</td>";
+		tag+="</tr>";
+	}
+	
+	listArea.innerHTML=tag;
+}
+function showData(json){
+	var getName = document.getElementById("getName");
+	var getTel = document.getElementById("getTel");
+	var getAddr = document.getElementById("getAddr");
+	var getFood = document.getElementById("getFood");
+	
+	getName.value=json.storeList[0].name;
+	getTel.value=json.storeList[0].tel;
+	getAddr.value=json.storeList[0].addr;
+	getFood.value=json.storeList[0].food;
+	
+	
+}
+function getStore(hotplace_id) {
+	alert(hotplace_id);
+	var xmlRequest = new XMLHttpRequest();
+	xmlRequest.onreadystatechange = function(){
+
+		if(this.readyState==4 && this.status==200){
+			var json = JSON.parse(this.responseText);
+			showData(json);
+		}
+	};
+	xmlRequest.open("GET","/async/content.jsp?hotplace_id="+hotplace_id,true);
+	xmlRequest.send();
+}
+//평상시와는 달리, 비동기요청을 시도한다!!
+function regist(){
+	var xmlRequest = new XMLHttpRequest();
+	xmlRequest.open("POST","/async/regist.jsp",true);
+	//post방식의 경우 body 구성
+	xmlRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	var name = document.getElementById("name").value;
+	var tel = document.getElementById("tel").value;
+	var addr = document.getElementById("addr").value;
+	var food = document.getElementById("food").value;
+	
+	xmlRequest.send("name="+name+"&tel="+tel+"&addr="+addr+"&food="+food);
+}
+</script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="inputArea">
+			<input type="text" id="name" placeholder="가게명"/>
+			<input type="text" id="tel" placeholder="연락처"/>
+			<input type="text" id="addr" placeholder="지역"/>
+			<input type="text" id="food" placeholder="대표메뉴"/>
+			<button onClick = "regist()">등록</button>
+			<button onClick = "getList()">목록</button>
+		</div>
+		
+		<div class ="listArea"></div>
+		
+		<div class ="detailArea">
+			<input type="hidden" id="hotplace_id"/>
+			<input type="text"  placeholder="가게명" id="getName"/>
+			<input type="text"  placeholder="연락처" id="getTel"/>
+			<input type="text" placeholder="지역" id="getAddr"/>
+			<input type="text" placeholder="대표메뉴" id="getFood"/>
+			<button>수정</button>
+			<button>삭제</button>
+		</div>
+	</div>
+</body>
+</html>
