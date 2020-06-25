@@ -53,27 +53,28 @@ public class StoreDAO {
 		Connection con =null;
 		PreparedStatement pstmt =null;
 		ResultSet rs = null;
-		String sql = "select * from store where store_id=?";
+		//String sql = "select * from store where store_id=?";
+		String sql = "select * from store s, icons i";
+		sql +=" where s.icons_id=i.icons_id and s.store_id=?";
 		con = dbManager.getConnection();
 		try {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, store_id);
 			rs = pstmt.executeQuery();
-			if(rs.next()) {
+			if(rs.next()) {				
 				Icons icons = new Icons();				
 				icons.setIcons_id(rs.getInt("icons_id"));
 				icons.setTitle(rs.getString("title"));
 				icons.setFilename(rs.getString("filename"));
-				
 				store = new Store();
 				store.setStore_id(rs.getInt("store_id"));
 				store.setName(rs.getString("name"));
 				store.setAddr(rs.getString("addr"));
 				store.setLati(rs.getDouble("lati"));
 				store.setLongi(rs.getDouble("longi"));
-				store.setMemo(rs.getString("memo"));
+				store.setMemo(rs.getString("memo"));		
 				
-				store.setIcons(icons); //결합				
+				store.setIcons(icons); //결합!!
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
