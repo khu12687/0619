@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<storeList>
+	<store>
+		<name>김밥천국</name>
+		<addr>여수</addr>
+		<lati>32.456</lati>
+		<longi>11.23</longi>
+		<memo>단무지</memo>
+		<icons_id>4</icons_id>
+	</store>
+	<store>
+		<name>중화루</name>
+		<addr>부산</addr>
+		<lati>22.156</lati>
+		<longi>41.1223</longi>
+		<memo>짜장</memo>
+		<icons_id>6</icons_id>
+	</store>
+	<store>
+		<name>치킨집</name>
+		<addr>인제</addr>
+		<lati>32.11156</lati>
+		<longi>11.452</longi>
+		<memo>무</memo>
+		<icons_id>5</icons_id>
+	</store>
+</storeList>
