@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+  <environments default="development">
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <!-- jdbc를 이용할 경우 
+      <dataSource type="POOLED">
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
+        <property name="username" value="c##java"/>
+        <property name="password" value="1234"/>
+      </dataSource>
+      -->
+      <dataSource type="JNDI">
+        <property name="data_source" value="java:comp/env/jdbc/oracle"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+  <!-- 쿼리문을 담고있는 XML을 매퍼라 부르고, 아래의 mappers 태그에 매퍼파일의 위치를 등록하면 됨 -->
+  <mappers>
+    <mapper resource="com/study/mybatis/ReBoardMapper.xml"/>
+  </mappers>
+</configuration>

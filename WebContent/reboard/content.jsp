@@ -1,12 +1,12 @@
+<%@page import="com.study.model.reboard.MybatisReBoardDAO"%>
 <%@page import="com.study.model.reboard.ReBoard"%>
-<%@page import="com.study.model.reboard.ReBoardDAO"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%!
-	ReBoardDAO reboardDAO = new ReBoardDAO();
+	MybatisReBoardDAO reboardDAO = new MybatisReBoardDAO();
 %>
 <%
-	String reboard_id = request.getParameter("reboard_id");
-	ReBoard reboard = reboardDAO.select(Integer.parseInt(reboard_id));
+	int reboard_id = Integer.parseInt(request.getParameter("reboard_id"));
+	ReBoard reboard = reboardDAO.select(reboard_id);
 %>
 <!DOCTYPE html>
 <html>
@@ -54,7 +54,7 @@ input[type=submit]:hover {
 	border-radius: 5px;
 	background-color: #f2f2f2;
 	padding: 20px;
-	disply: none;
+	display: none;
 	
 }
 #commentsArea{
@@ -74,6 +74,7 @@ input[type=submit]:hover {
 <script>
 $(function(){
 	CKEDITOR.replace("content");
+	CKEDITOR.replace("content2");
 	//목록버튼
 	$($("input[type='button']")[0]).click(function(){
 		location.href="/reboard/list.jsp";
@@ -130,10 +131,13 @@ $(function(){
 	
 	<div class="reply">
 		<form>
-			 <input type="text" id="fname"name="title" value="<%=reboard.getTitle()%>"> 
-			 <input type="text" id="fname"name="writer" value="<%=reboard.getWriter()%>"> 
-			 <input type="hidden" name="reboard_id" value="<%=reboard.getReboard_id()%>"/>
-			<textarea id="hit" name="content" style="height: 200px"><%=reboard.getContent()%></textarea>
+			 <input type ="hidden" name="reboard_id" value="<%=reboard.getReboard_id()%>">
+			 <input type ="hidden" name="team" value="<%=reboard.getTeam()%>">
+			 <input type ="hidden" name="rank" value="<%=reboard.getRank()%>">
+			 <input type ="hidden" name="depth" value="<%=reboard.getDepth()%>">
+			 <input type="text" name="title" value="<%=reboard.getTitle()%>"> 
+			 <input type="text" name="writer" value="<%=reboard.getWriter()%>"> 
+			<textarea id="content2" name="content" style="height: 200px"><%=reboard.getContent()%></textarea>
 			<input type="button" value="답변등록">
 		</form>
 	</div>

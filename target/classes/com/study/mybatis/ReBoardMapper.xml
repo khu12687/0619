@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test">
+
+	<!-- 답변 게시판 모든 글 가져오기 -->
+  <select id="selectAll" resultType="com.study.model.reboard.ReBoard">
+    select * from reboard order by team desc, rank asc
+  </select>
+  
+  <!-- 글등록 -->
+  <insert id="insert" parameterType="com.study.model.reboard.ReBoard">
+  	insert into reboard(reboard_id,title,writer,content,team)
+  	values(seq_reboard.nextval,#{title},#{writer},#{content},seq_reboard.nextval)
+  </insert>
+  
+  <!-- 상세보기 -->
+  <select id="select" parameterType="int" resultType="com.study.model.reboard.ReBoard">
+  	select * from reboard where reboard_id =#{reboard_id}
+  </select>
+  
+  <!-- rank 1증가 -->
+  <update id="updateRank" parameterType="com.study.model.reboard.ReBoard">
+  <![CDATA[
+  	update reboard set rank=rank+1
+  	where team=#{team} and rank >#{rank}
+  	]]>
+  </update>
+  
+  <!-- 답변등록 -->
+  <insert id="reply" parameterType="com.study.model.reboard.ReBoard">
+  	insert into reboard(reboard_id,title,writer,content,team,rank,depth)
+  	values(seq_reboard.nextval,#{title},#{writer},#{content},#{team},#{rank}+1,#{depth}+1)
+  </insert>
+</mapper>

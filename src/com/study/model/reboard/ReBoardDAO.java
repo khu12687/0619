@@ -49,7 +49,7 @@ public class ReBoardDAO {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		ReBoard reboard = new ReBoard();
+		ReBoard reboard = null;
 		String sql = "select * from reboard where reboard_id=?";
 		con = manager.getConnection();
 		try {
@@ -57,6 +57,7 @@ public class ReBoardDAO {
 			pstmt.setInt(1, reboard_id);
 			rs=pstmt.executeQuery();
 			if(rs.next()) {
+				reboard = new ReBoard();
 				reboard.setReboard_id(rs.getInt("reboard_id"));
 				reboard.setTitle(rs.getString("title"));
 				reboard.setWriter(rs.getString("writer"));
@@ -80,20 +81,53 @@ public class ReBoardDAO {
 	
 	//답변이 들어갈 자리 확보하는 메서드!
 	//주의 아래의 쿼리는 
-	public int updateRank() {
+	public void updateRank(ReBoard reboard) {
+		Connection con=null;
+		PreparedStatement pstmt = null;
+		con =manager.getConnection();
 		String sql="update reboard set rank=rank+1";
-		sql+=" where team=내본팀 and rank>내본팀 rank";
-		return 0;
+		sql+=" where team=? and rank>?";
+		
+		try {
+			pstmt=con.prepareStatement(sql);
+			pstmt.setInt(1, reboard.getTeam());
+			pstmt.setInt(2, reboard.getRank());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt);
+		}
 	}
 	//답변 등록 메서드
-	public int reply() {
-		String sql = "insert into reboard(reboard_id, title, wirter, content,team,rank,depth)";
+	public int reply(ReBoard reboard) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int result =0;
+		con =manager.getConnection();
+		String sql = "insert into reboard(reboard_id, title, writer, content,team,rank,depth)";
 		sql+=" values(seq_reboard.nextval,?,?,?,?,?,?)";
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, reboard.getTitle());
+			pstmt.setString(2, reboard.getWriter());
+			pstmt.setString(3, reboard.getContent());
+			pstmt.setInt(4, reboard.getTeam());
+			pstmt.setInt(5, reboard.getRank()+1); //답변이라서
+			pstmt.setInt(6, reboard.getDepth()+1); //답변이라서
+
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			manager.freeConnection(con, pstmt);
+		}
+
 		
 		//team : 내본글 team
 		//rank : 내본글 rank+1
 		//depth : 내본글 depth+1
-		return 0;
+		return result;
 	}
 	
 	//답변이 아닌 원글이다!!

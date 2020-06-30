@@ -1,8 +1,8 @@
+<%@page import="com.study.model.reboard.MybatisReBoardDAO"%>
 <%@page import="com.study.model.reboard.ReBoard"%>
 <%@page import="java.util.List"%>
-<%@page import="com.study.model.reboard.ReBoardDAO"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
-<%! ReBoardDAO reBoardDAO =new ReBoardDAO(); %>
+<%! MybatisReBoardDAO reBoardDAO =new MybatisReBoardDAO(); %>
 <%
 	List<ReBoard> boardList = reBoardDAO.selectAll();
 %>
@@ -77,7 +77,12 @@ $(function(){
 		<%ReBoard reboard=boardList.get(curPos++); %>
 		<tr>
 			<td><%=num-- %></td>
-			<td><a href="/reboard/content.jsp?reboard_id=<%=reboard.getReboard_id()%>"><%= reboard.getTitle() %></a></td>
+			<td>
+				<%if(reboard.getDepth()>0){ //답변일때만...%>
+				<img style="margin-left:<%=20*reboard.getDepth()%>px" src="/images/reply.png" width="20px"/>
+				<%} %>
+				<a href="/reboard/content.jsp?reboard_id=<%=reboard.getReboard_id()%>"><%= reboard.getTitle() %></a>
+			</td>
 			<td><%= reboard.getWriter() %></td>
 			<td><%= reboard.getRegdate().substring(0,10) %></td>
 			<td><%= reboard.getHit() %></td>
@@ -90,12 +95,16 @@ $(function(){
 		</tr>
 		<tr>
 			<td colspan="5" style="text-align:center;">
-				<a href="/reboard/list.jsp">◀</a>
+				<%if(firstPage>1){ %>
+				<a href="/reboard/list.jsp?currentPage=<%=firstPage-1%>">◀</a>
+				<%} %>
 				<%for(int i=firstPage; i<=lastPage; i++){ %>
 				<%if(i>totalPage)break; %>
 				<a <%if(i==currentPage){%>class="pageStyle"<%}%> href="/reboard/list.jsp?currentPage=<%=i %>">[<%=i %>]</a>
 				<%} %>
-				<a href="/reboard/list.jsp">▶</a>
+				<%if(lastPage<totalPage){ %>
+				<a href="/reboard/list.jsp?currentPage=<%=lastPage+1%>">▶</a>
+				<%} %>
 			</td>
 		</tr>
 	</table>
